@@ -1,0 +1,20 @@
+{
+  "name": "hivebrite-api-migration",
+  "version": "1.0.2",
+  "description": "Migrate code that calls the Hivebrite Admin API v1, v2 or v3 (switched off on 15 February 2027) to v3.1, or straight to v4, in any language: scans for every legacy call, rewrites authentication and endpoints, applies the response changes that fail silently, and proves the result with a re-scan, a sandbox smoke test and a response-shape comparison.",
+  "author": {
+    "name": "Hivebrite",
+    "url": "https://support.hivebrite.com"
+  },
+  "repository": "https://github.com/Hivebrite/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "hivebrite",
+    "admin-api",
+    "migration",
+    "v3.1",
+    "v4",
+    "oauth2"
+  ],
+  "homepage": "https://yourhivebrite.zendesk.com/hc/en-us/articles/29861483955868"
+}

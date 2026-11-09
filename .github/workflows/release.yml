@@ -1,0 +1,44 @@
+# Publishes a GitHub release for each version tag <plugin>--v<version>: the plugin's skills as
+# <plugin>.zip (with the LICENSE and the plugin README), and its CHANGELOG entry as the release notes.
+#
+# Changes to this repository arrive only from Hivebrite's publishing job, which also pushes the tags;
+# nobody pushes or tags here directly. Run this workflow by hand with a tag to retry a release.
+name: release
+on:
+  push:
+    tags: ["*--v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release, e.g. hivebrite-api-migration--v1.0.2"
+        required: true
+permissions:
+  contents: write
+concurrency:
+  group: release
+  cancel-in-progress: false
+jobs:
+  release:
+    if: github.repository == 'Hivebrite/agent-skills'
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+      - name: Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          plugin=${TAG%%--v*}; version=${TAG##*--v}
+          manifest="plugins/$plugin/.claude-plugin/plugin.json"
+          [ -f "$manifest" ] || { echo "unknown plugin $plugin"; exit 1; }
+          want=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["version"])' "$manifest")
+          [ "$version" = "$want" ] || { echo "tag $TAG != plugin version $want"; exit 1; }
+          if gh release view "$TAG" >/dev/null 2>&1; then echo "$TAG is already released."; exit 0; fi
+          ( cd "plugins/$plugin/skills" && zip -qr "$GITHUB_WORKSPACE/$plugin.zip" . )
+          zip -qj "$plugin.zip" LICENSE "plugins/$plugin/README.md"
+          awk -v v="$version" '$0=="### "v{f=1;next} /^### /{f=0} f' "plugins/$plugin/CHANGELOG.md" > "$RUNNER_TEMP/notes.md"
+          [ -s "$RUNNER_TEMP/notes.md" ] || { echo "no CHANGELOG entry for $plugin $version"; exit 1; }
+          gh release create "$TAG" "$plugin.zip" --verify-tag --title "$plugin $version" --notes-file "$RUNNER_TEMP/notes.md"

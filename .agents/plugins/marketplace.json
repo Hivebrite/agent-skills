@@ -1,0 +1,20 @@
+{
+  "name": "hivebrite",
+  "interface": {
+    "displayName": "Hivebrite"
+  },
+  "plugins": [
+    {
+      "name": "hivebrite-api-migration",
+      "source": {
+        "source": "local",
+        "path": "./plugins/hivebrite-api-migration"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Development"
+    }
+  ]
+}

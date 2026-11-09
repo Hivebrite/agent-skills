@@ -1,0 +1,27 @@
+{
+  "name": "hivebrite",
+  "owner": {
+    "name": "Hivebrite",
+    "url": "https://support.hivebrite.com"
+  },
+  "metadata": {
+    "description": "Official Hivebrite skills for AI assistants, starting with the migration of Admin API integrations to v3.1 and v4."
+  },
+  "plugins": [
+    {
+      "name": "hivebrite-api-migration",
+      "source": "./plugins/hivebrite-api-migration",
+      "description": "Migrate code that calls the Hivebrite Admin API v1, v2 or v3 (switched off on 15 February 2027) to v3.1 or v4, in any language.",
+      "version": "1.0.2",
+      "category": "development",
+      "keywords": [
+        "hivebrite",
+        "admin-api",
+        "migration",
+        "v3.1",
+        "v4",
+        "oauth2"
+      ]
+    }
+  ]
+}
